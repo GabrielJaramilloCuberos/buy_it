@@ -46,14 +46,14 @@ class ProductFirestoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun createProduct(tweet: CreateProductDto) {
+    override suspend fun createProduct(product: CreateProductDto) {
         val productData = hashMapOf(
-            "name" to tweet.name,
-            "brand" to tweet.brand,
-            "imageURL" to (tweet.imageUrl ?: ""),
-            "description" to (tweet.description ?: ""),
+            "name" to product.name,
+            "brand" to product.brand,
+            "imageURL" to (product.imageUrl ?: ""),
+            "description" to (product.description ?: ""),
             "percentageLike" to 0,
-            "range" to (tweet.range ?: ""),
+            "range" to (product.range ?: ""),
             "created" to System.currentTimeMillis().toString()
         )
 
