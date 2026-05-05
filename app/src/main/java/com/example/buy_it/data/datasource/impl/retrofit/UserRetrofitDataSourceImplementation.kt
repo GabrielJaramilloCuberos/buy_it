@@ -9,7 +9,7 @@ import com.example.buy_it.data.repository.AuthRepository
 import javax.inject.Inject
 import com.example.buy_it.data.dtos.UserDTO
 
-class UserRetrofitDatasourceImplementation @Inject constructor(
+class UserRetrofitDataSourceImplementation @Inject constructor(
     private val service: UserRetrofitService,
     private val repo : AuthRepository
 ) : UserRemoteDatasource {

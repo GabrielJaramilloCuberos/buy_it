@@ -3,7 +3,7 @@ package com.example.buy_it.data.datasource.impl.retrofit
 import android.util.Log
 import com.example.buy_it.data.datasource.ReviewRemoteDataSource
 import com.example.buy_it.data.datasource.services.ReviewRetrofitService
-import com.example.buy_it.data.dtos.CreateReviewDTO
+import com.example.buy_it.data.dtos.CreateReviewDto
 import com.example.buy_it.data.dtos.ReviewDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -27,10 +27,10 @@ class ReviewRetrofitDataSourceImplementation @Inject constructor(
         return service.getProductReviews(productId)
     }
 
-    override suspend fun createReview(review: CreateReviewDTO) =
+    override suspend fun createReview(review: CreateReviewDto) =
         service.createReview(review)
 
-    override suspend fun updateReview(id: String, review: CreateReviewDTO) =
+    override suspend fun updateReview(id: String, review: CreateReviewDto) =
         service.updateReview(id, review)
 
     override suspend fun deleteReview(id: String) {

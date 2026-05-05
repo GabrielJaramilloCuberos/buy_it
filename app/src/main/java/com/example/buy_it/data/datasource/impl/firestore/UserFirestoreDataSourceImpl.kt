@@ -2,7 +2,6 @@ package com.example.buy_it.data.datasource.impl.firestore
 
 import android.util.Log
 import com.example.buy_it.data.datasource.UserRemoteDatasource
-import com.example.buy_it.data.datasource.impl.retrofit.UserRetrofitDatasourceImplementation
 import com.example.buy_it.data.dtos.RegisterUserDto
 import com.example.buy_it.data.dtos.ReviewDTO
 import com.example.buy_it.data.dtos.UserProfileFirestoreDTO
@@ -14,23 +13,22 @@ import com.google.firebase.firestore.FieldValue
 import com.example.buy_it.data.dtos.UserDTO
 
 class UserFirestoreDataSourceImpl @Inject constructor(
-    private val db: FirebaseFirestore,
-    private val userRetrofitDatasource: UserRetrofitDatasourceImplementation
+    private val db: FirebaseFirestore
 ) : UserRemoteDatasource {
 
-    override suspend fun getUserById(id: String): UserProfileFirestoreDTO {
+    override suspend fun getUserById(id: String): UserProfileFirestoreDTO? {
         return getUserById(id, null)
     }
 
     override suspend fun getUserById(
         id: String,
         currentUserId: String?
-    ): UserProfileFirestoreDTO {
+    ): UserProfileFirestoreDTO? {
         val docRef = db.collection("users").document(id)
         val respuesta = docRef.get().await()
 
         val user = respuesta.toObject(UserProfileFirestoreDTO::class.java)
-            ?: throw Exception("Usuario no encontrado.")
+            ?: return null
 
         val userWithId = user.copy(id = respuesta.id)
 

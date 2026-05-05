@@ -1,8 +1,7 @@
 package com.example.buy_it.data.datasource.impl.firestore
 
-import android.util.Log
 import com.example.buy_it.data.datasource.ReviewRemoteDataSource
-import com.example.buy_it.data.dtos.CreateReviewDTO
+import com.example.buy_it.data.dtos.CreateReviewDto
 import com.example.buy_it.data.dtos.ReviewDTO
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
-class ReviewFirestoreDatasourceImpl @Inject constructor(
+class ReviewFirestoreDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : ReviewRemoteDataSource {
 
@@ -65,7 +64,7 @@ class ReviewFirestoreDatasourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun createReview(review: CreateReviewDTO) {
+    override suspend fun createReview(review: CreateReviewDto) {
         db.collection("reviews")
             .add(review)
             .await()
@@ -73,7 +72,7 @@ class ReviewFirestoreDatasourceImpl @Inject constructor(
 
     override suspend fun updateReview(
         id: String,
-        review: CreateReviewDTO
+        review: CreateReviewDto
     ) {
         db.collection("reviews")
             .document(id)

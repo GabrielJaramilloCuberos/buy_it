@@ -1,6 +1,6 @@
 package com.example.buy_it.data.datasource
 
-import com.example.buy_it.data.dtos.CreateReviewDTO
+import com.example.buy_it.data.dtos.CreateReviewDto
 import com.example.buy_it.data.dtos.ReviewDTO
 import kotlinx.coroutines.flow.Flow
 interface ReviewRemoteDataSource {
@@ -13,9 +13,9 @@ interface ReviewRemoteDataSource {
 
     suspend fun getReviewsByProductId(productId: String): List<ReviewDTO>
 
-    suspend fun createReview(review: CreateReviewDTO)
+    suspend fun createReview(review: CreateReviewDto)
 
-    suspend fun updateReview(id: String, review: CreateReviewDTO)
+    suspend fun updateReview(id: String, review: CreateReviewDto)
 
     suspend fun deleteReview(id: String)
 

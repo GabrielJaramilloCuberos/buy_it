@@ -1,6 +1,6 @@
 package com.example.buy_it.data.datasource.services
 
-import com.example.buy_it.data.dtos.CreateReviewDTO
+import com.example.buy_it.data.dtos.CreateReviewDto
 import com.example.buy_it.data.dtos.ReviewDTO
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,10 +19,10 @@ interface ReviewRetrofitService {
     suspend fun getReviewById(@Path("id") id: String): ReviewDTO
 
     @POST("reviews")
-    suspend fun createReview(@Body review: CreateReviewDTO)
+    suspend fun createReview(@Body review: CreateReviewDto)
 
     @PUT("reviews/{id}")
-    suspend fun updateReview(@Path("id") id: String, @Body review: CreateReviewDTO)
+    suspend fun updateReview(@Path("id") id: String, @Body review: CreateReviewDto)
 
     @DELETE("reviews/{id}")
     suspend fun deleteReview(@Path("id") id: String)

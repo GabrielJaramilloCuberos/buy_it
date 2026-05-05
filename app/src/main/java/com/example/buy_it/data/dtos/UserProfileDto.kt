@@ -2,7 +2,6 @@ package com.example.buy_it.data.dtos
 
 import com.example.buy_it.data.UserProfileInfo
 import java.time.LocalDate
-import kotlin.toString
 
 abstract class UserDtoGeneric{
     abstract fun toUserProfileInfo(): UserProfileInfo

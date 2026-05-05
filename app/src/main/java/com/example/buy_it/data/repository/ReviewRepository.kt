@@ -3,9 +3,9 @@ package com.example.buy_it.data.repository
 import android.util.Log
 import com.example.buy_it.data.ReviewInfo
 import com.example.buy_it.data.datasource.AuthRemoteDataSource
-import com.example.buy_it.data.datasource.impl.firestore.ProductFirestoreDatasourceImpl
-import com.example.buy_it.data.datasource.impl.firestore.ReviewFirestoreDatasourceImpl
-import com.example.buy_it.data.dtos.CreateReviewDTO
+import com.example.buy_it.data.datasource.impl.firestore.ProductFirestoreDataSourceImpl
+import com.example.buy_it.data.datasource.impl.firestore.ReviewFirestoreDataSourceImpl
+import com.example.buy_it.data.dtos.CreateReviewDto
 import com.example.buy_it.data.dtos.toReviewInfo
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class ReviewRepository @Inject constructor(
-    private val reviewRemoteDataSource: ReviewFirestoreDatasourceImpl,
+    private val reviewRemoteDataSource: ReviewFirestoreDataSourceImpl,
     private val authRemoteDataSource: AuthRemoteDataSource,
-    private val productRemoteDataSource: ProductFirestoreDatasourceImpl
+    private val productRemoteDataSource: ProductFirestoreDataSourceImpl
 ) {
 
     suspend fun getReviews(): Result<List<ReviewInfo>> {
@@ -64,7 +64,7 @@ class ReviewRepository @Inject constructor(
 
             val productSnapshot = productRemoteDataSource.getProduct(productId)
 
-            val reviewDTO = CreateReviewDTO(
+            val reviewDTO = CreateReviewDto(
                 userId = currentUserId,
                 productId = productId,
                 like = like,
@@ -93,7 +93,7 @@ class ReviewRepository @Inject constructor(
 
             val productSnapshot = productRemoteDataSource.getProduct(productId)
 
-            val reviewDTO = CreateReviewDTO(
+            val reviewDTO = CreateReviewDto(
                 userId = currentUserId,
                 productId = productId,
                 like = like,

@@ -1,6 +1,6 @@
 package com.example.buy_it.data.dtos
 
-data class CreateReviewDTO(
+data class CreateReviewDto(
     val userId: String = "",
     val productId: String = "",
     val like: Boolean = false,

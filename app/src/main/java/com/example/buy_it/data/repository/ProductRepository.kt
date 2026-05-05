@@ -4,15 +4,15 @@ import android.util.Log
 import coil.network.HttpException
 import com.example.buy_it.data.ProductInfo
 import com.example.buy_it.data.ReviewInfo
-import com.example.buy_it.data.datasource.impl.firestore.ProductFirestoreDatasourceImpl
+import com.example.buy_it.data.datasource.impl.firestore.ProductFirestoreDataSourceImpl
 import com.example.buy_it.data.datasource.impl.firestore.UserFirestoreDataSourceImpl
 import com.example.buy_it.data.datasource.local.FirestoreSeedProducts
-import com.example.buy_it.data.dtos.CreateProductDTO
+import com.example.buy_it.data.dtos.CreateProductDto
 import com.example.buy_it.data.dtos.toProductInfo
 import javax.inject.Inject
 
 class ProductRepository @Inject constructor(
-    private val productRemoteDataSource: ProductFirestoreDatasourceImpl,
+    private val productRemoteDataSource: ProductFirestoreDataSourceImpl,
     private val userRemoteDataSource: UserFirestoreDataSourceImpl,
     private val reviewRepository: ReviewRepository
 ) {
@@ -72,7 +72,7 @@ class ProductRepository @Inject constructor(
         range: String?
     ): Result<Unit> {
         return try {
-            val createProductDTO = CreateProductDTO(name, brand, imageUrl, description, range)
+            val createProductDTO = CreateProductDto(name, brand, imageUrl, description, range)
             productRemoteDataSource.createProduct(createProductDTO)
             Result.success(Unit)
         } catch (e: HttpException) {
@@ -101,11 +101,17 @@ class ProductRepository @Inject constructor(
             val completedReviews = reviewInfos.map { info ->
                 if (info.name == "Usuario desconocido") {
                     try {
-                        val userInfo = userRemoteDataSource.getUserById(info.userId).toUserProfileInfo()
-                        info.copy(
-                            name = userInfo.name,
-                            profileImage = userInfo.pfpURL
-                        )
+                        val userDto = userRemoteDataSource.getUserById(info.userId)
+                        val userInfo = userDto?.toUserProfileInfo()
+
+                        if (userInfo != null) {
+                            info.copy(
+                                name = userInfo.name,
+                                profileImage = userInfo.pfpURL
+                            )
+                        } else {
+                            info
+                        }
                     } catch (e: Exception) {
                         info
                     }

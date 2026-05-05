@@ -1,6 +1,6 @@
 package com.example.buy_it.data.datasource.services
 
-import com.example.buy_it.data.dtos.CreateProductDTO
+import com.example.buy_it.data.dtos.CreateProductDto
 import com.example.buy_it.data.dtos.ProductDTO
 import com.example.buy_it.data.dtos.ReviewDTO
 import retrofit2.http.Body
@@ -22,10 +22,10 @@ interface ProductRetrofitService {
     suspend fun getProductReviews(@Path("id") id: String): List<ReviewDTO>
 
     @POST("products")
-    suspend fun createProduct(@Body tweet: CreateProductDTO): Unit
+    suspend fun createProduct(@Body tweet: CreateProductDto): Unit
 
     @PUT("products/{id}")
-    suspend fun updateProduct(@Path("id") id: String, @Body tweet: CreateProductDTO)
+    suspend fun updateProduct(@Path("id") id: String, @Body tweet: CreateProductDto)
 
     @DELETE("products/{id}")
     suspend fun deleteProduct(@Path("id") id: String): Unit

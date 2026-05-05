@@ -1,6 +1,6 @@
 package com.example.buy_it.data.dtos
 
-data class CreateProductDTO(
+data class CreateProductDto(
     val name: String,
     val brand: String,
     val imageUrl: String?,

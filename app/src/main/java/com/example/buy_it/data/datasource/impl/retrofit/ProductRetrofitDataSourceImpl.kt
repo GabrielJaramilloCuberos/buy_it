@@ -2,12 +2,12 @@ package com.example.buy_it.data.datasource.impl.retrofit
 
 import com.example.buy_it.data.datasource.ProductRemoteDataSource
 import com.example.buy_it.data.datasource.services.ProductRetrofitService
-import com.example.buy_it.data.dtos.CreateProductDTO
+import com.example.buy_it.data.dtos.CreateProductDto
 import com.example.buy_it.data.dtos.ProductDTO
 import com.example.buy_it.data.dtos.ReviewDTO
 import javax.inject.Inject
 
-class ProductRetrofitDatasourceImpl @Inject constructor(
+class ProductRetrofitDataSourceImpl @Inject constructor(
     val service: ProductRetrofitService
 ): ProductRemoteDataSource {
     override suspend fun getAllProducts(): List<ProductDTO> {
@@ -22,7 +22,7 @@ class ProductRetrofitDatasourceImpl @Inject constructor(
         return service.getProductReviews(id)
     }
 
-    override suspend fun createProduct(tweet: CreateProductDTO) {
+    override suspend fun createProduct(tweet: CreateProductDto) {
         return service.createProduct(tweet)
     }
 
@@ -32,7 +32,7 @@ class ProductRetrofitDatasourceImpl @Inject constructor(
 
     override suspend fun updateProduct(
         id: String,
-        tweet: CreateProductDTO
+        tweet: CreateProductDto
     ) {
         return service.updateProduct(id, tweet)
     }

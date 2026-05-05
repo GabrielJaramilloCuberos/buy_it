@@ -1,7 +1,7 @@
 package com.example.buy_it.data.datasource.impl.firestore
 
 import com.example.buy_it.data.datasource.ProductRemoteDataSource
-import com.example.buy_it.data.dtos.CreateProductDTO
+import com.example.buy_it.data.dtos.CreateProductDto
 import com.example.buy_it.data.dtos.ProductDTO
 import com.example.buy_it.data.dtos.ReviewDTO
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,7 +9,7 @@ import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class ProductFirestoreDatasourceImpl @Inject constructor(
+class ProductFirestoreDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : ProductRemoteDataSource {
 
@@ -46,7 +46,7 @@ class ProductFirestoreDatasourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun createProduct(tweet: CreateProductDTO) {
+    override suspend fun createProduct(tweet: CreateProductDto) {
         val productData = hashMapOf(
             "name" to tweet.name,
             "brand" to tweet.brand,
@@ -71,7 +71,7 @@ class ProductFirestoreDatasourceImpl @Inject constructor(
 
     override suspend fun updateProduct(
         id: String,
-        tweet: CreateProductDTO
+        tweet: CreateProductDto
     ) {
         val productData = hashMapOf(
             "name" to tweet.name,

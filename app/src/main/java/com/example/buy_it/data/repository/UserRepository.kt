@@ -21,6 +21,11 @@ class UserRepository @Inject constructor(
         return try {
             val currentUserId = authRemoteDataSource.currentUser?.uid
             val user = userRemoteDatasource.getUserById(id, currentUserId)
+
+            if (user == null) {
+                return Result.failure(Exception("Usuario no encontrado"))
+            }
+
             val userProfileInfo = user.toUserProfileInfo()
             Result.success(userProfileInfo)
         } catch (e: Exception) {
