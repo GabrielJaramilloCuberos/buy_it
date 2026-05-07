@@ -12,16 +12,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,8 +37,7 @@ fun PriceCard(
     info: PricedItems,
     onClick: () -> Unit
 ) {
-    val isUp = info.percentage >= 0
-    val shape = RoundedCornerShape(22.dp)
+    val shape = RoundedCornerShape(24.dp)
 
     Card(
         modifier = Modifier
@@ -43,101 +45,52 @@ fun PriceCard(
             .clickable(onClick = onClick),
         shape = shape,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 18.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Card(
+            Surface(
                 shape = CircleShape,
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size(64.dp),
+                shadowElevation = 1.dp
             ) {
                 Image(
                     painter = painterResource(info.image),
                     contentDescription = info.name,
                     modifier = Modifier
-                        .size(60.dp)
-                        .padding(8.dp)
-                        .clip(CircleShape),
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     contentScale = ContentScale.Fit
                 )
             }
 
+            Spacer(modifier = Modifier.width(16.dp))
+
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = info.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 17.sp,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Precio reportado:",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(Modifier.size(6.dp))
-                        Text(
-                            text = "$${info.price}",
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Oferta:",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(Modifier.size(8.dp))
-
-                        val pillColor =
-                            if (isUp) MaterialTheme.colorScheme.tertiaryContainer
-                            else MaterialTheme.colorScheme.errorContainer
-
-                        val pillTextColor =
-                            if (isUp) MaterialTheme.colorScheme.onTertiaryContainer
-                            else MaterialTheme.colorScheme.onErrorContainer
-
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    color = pillColor,
-                                    shape = RoundedCornerShape(14.dp)
-                                )
-                                .padding(horizontal = 12.dp, vertical = 7.dp)
-                        ) {
-                            Text(
-                                text = if (isUp) "↑ +${info.percentage}%" else "↓ ${info.percentage}%",
-                                color = pillTextColor,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp
-                            )
-                        }
-                    }
-                }
+                
+                Text(
+                    text = "Disponible en tienda",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
+            
+            // El precio ha sido ocultado visualmente pero se mantiene en la lógica
         }
     }
 }

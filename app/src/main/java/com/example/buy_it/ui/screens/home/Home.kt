@@ -1,8 +1,12 @@
 package com.example.buy_it.ui.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -66,20 +70,29 @@ fun Home(
                     contentPadding = PaddingValues(bottom = 90.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    items(state.filteredReviews) { review ->
-                        ProductCard(
-                            productInfo = ProductInfo(
-                                id = review.productId,
-                                name = review.product,
-                                image = review.imgProd,
-                                description = review.review,
-                                likePercent = review.percentageLikes,
-                                range = review.range,
-                                ratingsCount = review.likesCount
-                            ),
-                            onClick = { onOpenDetail(review.productId) },
-                            isLikeCount = true
-                        )
+                    itemsIndexed(state.filteredReviews) { index, review ->
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn(animationSpec = tween(600, delayMillis = index * 100)) +
+                                    slideInVertically(
+                                        initialOffsetY = { 50 },
+                                        animationSpec = tween(600, delayMillis = index * 100)
+                                    )
+                        ) {
+                            ProductCard(
+                                productInfo = ProductInfo(
+                                    id = review.productId,
+                                    name = review.product,
+                                    image = review.imgProd,
+                                    description = review.review,
+                                    likePercent = review.percentageLikes,
+                                    range = review.range,
+                                    ratingsCount = review.likesCount
+                                ),
+                                onClick = { onOpenDetail(review.productId) },
+                                isLikeCount = true
+                            )
+                        }
                     }
                 }
             }

@@ -27,8 +27,7 @@ class ReviewEditorViewModel @Inject constructor(
         get() = authRepository.currentUser?.uid
 
     private fun recalculate(state: ReviewEditorState): ReviewEditorState {
-        val baseCanPublish = state.likeChoice != LikeChoice.None &&
-                state.opinion.trim().isNotEmpty()
+        val baseCanPublish = state.opinion.trim().isNotEmpty()
 
         val finalCanPublish = if (state.isEditMode) {
             baseCanPublish && state.canEditOrDelete
@@ -39,14 +38,6 @@ class ReviewEditorViewModel @Inject constructor(
         return state.copy(
             canPublish = finalCanPublish
         )
-    }
-
-    fun onLikeChoiceChange(likeChoice: LikeChoice) {
-        if (_uiState.value.isEditMode && !_uiState.value.canEditOrDelete) return
-
-        _uiState.update { current ->
-            recalculate(current.copy(likeChoice = likeChoice))
-        }
     }
 
     fun onOpinionChange(opinion: String) {

@@ -66,8 +66,8 @@ data class DrawerItem(
 )
 
 val drawerItems = listOf(
-    DrawerItem("Inicio", Icons.Default.Home, Screen.Home.route),
-    DrawerItem("Tendencias", Icons.Default.TrendingUp, Screen.Trends.route),
+    DrawerItem("Actividad de seguidos", Icons.Default.Home, Screen.Home.route),
+    DrawerItem("Catálogo de productos", Icons.Default.TrendingUp, Screen.Trends.route),
     DrawerItem("Perfil", Icons.Default.Person, Screen.Profile.route),
     DrawerItem("Configuraciones", Icons.Default.Settings, Screen.Configuration.route),
 )
@@ -238,7 +238,8 @@ fun BuyIt(
                                 }
                             },
                             onBuscarClick = { navController.navigate(Screen.Trends.route) },
-                            onProfileClick = { navController.navigate(Screen.Profile.route) }
+                            onProfileClick = { navController.navigate(Screen.Profile.route) },
+                            currentRoute = currentRoute
                         )
                     }
                 }

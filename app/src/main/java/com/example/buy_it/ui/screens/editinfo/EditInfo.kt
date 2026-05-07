@@ -4,6 +4,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -73,107 +78,125 @@ private fun EditInfoContent(
 ) {
     val icono = if (!uiState.mostrarPassword) R.drawable.hide else R.drawable.see
 
+    val visibleState = remember {
+        androidx.compose.animation.core.MutableTransitionState(false).apply { targetState = true }
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         FondoBlancoEditInfo()
 
-        PanelGlass(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp, vertical = 18.dp)
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 34.dp, vertical = 36.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(1000)) +
+                    slideInVertically(
+                        initialOffsetY = { it / 8 },
+                        animationSpec = androidx.compose.animation.core.spring(
+                            dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
+                            stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+                        )
+                    )
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            PictureWithCircle(uiState.profileImage)
-
-            if (uiState.errormsg != null) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = uiState.errormsg!!,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+            Box(contentAlignment = Alignment.Center) {
+                PanelGlass(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp, vertical = 18.dp)
                 )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 34.dp, vertical = 36.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    PictureWithCircle(uiState.profileImage)
+
+                    if (uiState.errormsg != null) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = uiState.errormsg!!,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    PickImage(
+                        action = { onImageChange(it) }
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    Text(
+                        text = "Editar perfil",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Actualiza tu información personal",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(18.dp)
+                    ) {
+                        FormFieldLabel(text = stringResource(R.string.nombre))
+                        TextInput(
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = stringResource(R.string.buy_it),
+                            item = uiState.name,
+                            onItemChange = onNameChange
+                        )
+
+                        FormFieldLabel(text = stringResource(R.string.email))
+                        TextInput(
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = stringResource(R.string.buyit_buyit_com),
+                            item = uiState.email,
+                            onItemChange = onEmailChange
+                        )
+
+                        FormFieldLabel(text = stringResource(R.string.contrasenna))
+                        PasswordInput(
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = stringResource(R.string.contrasenna),
+                            item = uiState.password,
+                            onItemChange = onPasswordChange,
+                            icono = icono,
+                            mostrar = uiState.mostrarPassword,
+                            onMostrarPassword = onToggleMostrarPassword
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(34.dp))
+
+                    MainButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        text = stringResource(R.string.guardar_cambios),
+                        onClick = onSaveChanges
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
-
-            PickImage(
-                action = { onImageChange(it) }
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            Text(
-                text = "Editar perfil",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Actualiza tu información personal",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.outline
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(18.dp)
-            ) {
-                FormFieldLabel(text = stringResource(R.string.nombre))
-                TextInput(
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.buy_it),
-                    item = uiState.name,
-                    onItemChange = onNameChange
-                )
-
-                FormFieldLabel(text = stringResource(R.string.email))
-                TextInput(
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.buyit_buyit_com),
-                    item = uiState.email,
-                    onItemChange = onEmailChange
-                )
-
-                FormFieldLabel(text = stringResource(R.string.contrasenna))
-                PasswordInput(
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = stringResource(R.string.contrasenna),
-                    item = uiState.password,
-                    onItemChange = onPasswordChange,
-                    icono = icono,
-                    mostrar = uiState.mostrarPassword,
-                    onMostrarPassword = onToggleMostrarPassword
-                )
-            }
-
-            Spacer(modifier = Modifier.height(34.dp))
-
-            MainButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                text = stringResource(R.string.guardar_cambios),
-                onClick = onSaveChanges
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

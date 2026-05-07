@@ -1,6 +1,10 @@
 package com.example.buy_it.ui.screens.profile
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,16 +19,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +41,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.width
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,7 +50,6 @@ import com.example.buy_it.ui.components.ProfileCircles
 import com.example.buy_it.ui.screens.editinfo.PictureWithCircle
 import com.example.buy_it.ui.screens.home.ProductCard
 import com.example.buy_it.ui.theme.Buy_itTheme
-import androidx.compose.material3.Button
 
 @Composable
 fun Profile(
@@ -234,26 +237,35 @@ fun Profile(
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            items(state.reviews) { review ->
-                ProductCard(
-                    productInfo = ProductInfo(
-                        id = review.productId,
-                        name = review.product,
-                        image = review.imgProd,
-                        description = review.review,
-                        likePercent = review.percentageLikes,
-                        range = review.range,
-                        ratingsCount = review.likesCount
-                    ),
-                    onClick = {
-                        if (profileViewModel.isReviewOwner(review.userId)) {
-                            onOpenDetail(review.productId) // O onEditReview si existiera
-                        } else {
-                            onOpenDetail(review.productId)
-                        }
-                    },
-                    isLikeCount = true
-                )
+            itemsIndexed(state.reviews) { index, review ->
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn(animationSpec = tween(600, delayMillis = 400 + index * 100)) +
+                            slideInVertically(
+                                initialOffsetY = { 50 },
+                                animationSpec = tween(600, delayMillis = 400 + index * 100)
+                            )
+                ) {
+                    ProductCard(
+                        productInfo = ProductInfo(
+                            id = review.productId,
+                            name = review.product,
+                            image = review.imgProd,
+                            description = review.review,
+                            likePercent = review.percentageLikes,
+                            range = review.range,
+                            ratingsCount = review.likesCount
+                        ),
+                        onClick = {
+                            if (profileViewModel.isReviewOwner(review.userId)) {
+                                onOpenDetail(review.productId) // O onEditReview si existiera
+                            } else {
+                                onOpenDetail(review.productId)
+                            }
+                        },
+                        isLikeCount = true
+                    )
+                }
             }
         }
     }

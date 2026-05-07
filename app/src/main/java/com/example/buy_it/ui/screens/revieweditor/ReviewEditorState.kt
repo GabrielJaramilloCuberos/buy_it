@@ -10,7 +10,7 @@ data class ReviewEditorState(
     val reviewId: String? = null,
     val productName: String = "",
     val productImage: String = "",
-    val likeChoice: LikeChoice = LikeChoice.None,
+    val likeChoice: LikeChoice = LikeChoice.Like,
     val opinion: String = "",
     val canPublish: Boolean = false,
     val isLoading: Boolean = false,

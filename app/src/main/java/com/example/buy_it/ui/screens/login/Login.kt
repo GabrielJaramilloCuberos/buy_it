@@ -1,5 +1,12 @@
 package com.example.buy_it.ui.screens.login
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,6 +79,11 @@ fun LoginContent(
 ) {
     val icono = if (!state.isPasswordVisible) R.drawable.hide else R.drawable.see
 
+    // Estado para disparar las animaciones
+    val visibleState = remember {
+        MutableTransitionState(false).apply { targetState = true }
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -92,54 +104,80 @@ fun LoginContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                GradientMessage(
-                    text = "buy it.",
-                    fontSize = 56.sp
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Descubre, compara y comparte opiniones",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                // Título con animación
+                AnimatedVisibility(
+                    visibleState = visibleState,
+                    enter = fadeIn(animationSpec = tween(800)) + slideInVertically(initialOffsetY = { 40 })
                 ) {
-                    TextInput(
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = "Email",
-                        item = state.email,
-                        onItemChange = onEmailChanged
-                    )
-
-                    PasswordInput(
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = "Contraseña",
-                        item = state.password,
-                        onItemChange = onPasswordChanged,
-                        mostrar = state.isPasswordVisible,
-                        onMostrarPassword = togglePasswordVisibility,
-                        icono = icono
+                    GradientMessage(
+                        text = "buy it.",
+                        fontSize = 56.sp
                     )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                // Descripción con ligero retraso
+                AnimatedVisibility(
+                    visibleState = visibleState,
+                    enter = fadeIn(animationSpec = tween(800, delayMillis = 200)) +
+                            slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(800, delayMillis = 200))
                 ) {
-                    CheckAndText(
-                        estado = state.isRememberMeChecked,
-                        onEstadoChange = { onRememberMeChanged() }
+                    Text(
+                        text = "Descubre, compara y comparte opiniones",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center
                     )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // Inputs con retraso
+                AnimatedVisibility(
+                    visibleState = visibleState,
+                    enter = fadeIn(animationSpec = tween(800, delayMillis = 400)) +
+                            slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(800, delayMillis = 400))
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        TextInput(
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = "Email",
+                            item = state.email,
+                            onItemChange = onEmailChanged
+                        )
+
+                        PasswordInput(
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = "Contraseña",
+                            item = state.password,
+                            onItemChange = onPasswordChanged,
+                            mostrar = state.isPasswordVisible,
+                            onMostrarPassword = togglePasswordVisibility,
+                            icono = icono
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Checkbox
+                AnimatedVisibility(
+                    visibleState = visibleState,
+                    enter = fadeIn(animationSpec = tween(800, delayMillis = 500))
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CheckAndText(
+                            estado = state.isRememberMeChecked,
+                            onEstadoChange = { onRememberMeChanged() }
+                        )
+                    }
                 }
 
                 if (state.mostrarMensaje && state.errorMessage.isNotEmpty()) {
@@ -155,23 +193,32 @@ fun LoginContent(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                MainButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    text = stringResource(R.string.iniciar_sesion),
-                    onClick = onLoginButtonPressed
-                )
+                // Botones con retraso final
+                AnimatedVisibility(
+                    visibleState = visibleState,
+                    enter = fadeIn(animationSpec = tween(800, delayMillis = 600)) +
+                            slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(800, delayMillis = 600))
+                ) {
+                    Column {
+                        MainButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            text = stringResource(R.string.iniciar_sesion),
+                            onClick = onLoginButtonPressed
+                        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                SecondaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    text = stringResource(R.string.crear_cuenta),
-                    onClick = onRegisterButtonPressed
-                )
+                        SecondaryButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            text = stringResource(R.string.crear_cuenta),
+                            onClick = onRegisterButtonPressed
+                        )
+                    }
+                }
             }
         }
     }

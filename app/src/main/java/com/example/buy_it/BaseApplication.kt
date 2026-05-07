@@ -14,9 +14,12 @@ class BaseApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // Comentado para usar Firebase real en lugar de emuladores locales
+        /*
         if (BuildConfig.DEBUG) {
             Firebase.firestore.useEmulator("10.0.2.2", 8080)
             Firebase.auth.useEmulator("10.0.2.2", 9099)
         }
+        */
     }
 }

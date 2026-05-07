@@ -1,5 +1,9 @@
 package com.example.buy_it.ui.screens.createreview
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,13 +14,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.buy_it.ui.components.TextInput
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import com.example.buy_it.ui.components.MainButton
@@ -26,19 +29,14 @@ import com.example.buy_it.ui.components.MainButton
 fun Createreview(
     onReviewSubmitted: () -> Unit,
     modifier: Modifier = Modifier,
-    // viewModel: CreateReviewViewModel = hiltViewModel()
 ) {
-
-    // val uiState by viewModel.uiState.collectAsState()
-    val uiState = CreateReviewState()
+    var uiState by remember { mutableStateOf(CreateReviewState()) }
 
     CreateReviewContent(
         uiState = uiState,
-        onProductNameChange = { /* viewModel.onProductNameChange(it) */ },
-        onLikeChange = { /* viewModel.onLikeChange(it) */ },
-        onCommentChange = { /* viewModel.onCommentChange(it) */ },
+        onProductNameChange = { uiState = uiState.copy(productName = it) },
+        onCommentChange = { uiState = uiState.copy(comment = it) },
         onSubmit = {
-            // viewModel.submitReview()
             onReviewSubmitted()
         },
         modifier = modifier
@@ -49,11 +47,14 @@ fun Createreview(
 private fun CreateReviewContent(
     uiState: CreateReviewState,
     onProductNameChange: (String) -> Unit,
-    onLikeChange: (Boolean) -> Unit,
     onCommentChange: (String) -> Unit,
     onSubmit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val visibleState = remember {
+        androidx.compose.animation.core.MutableTransitionState(false).apply { targetState = true }
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
         com.example.buy_it.ui.components.MainBackground()
 
@@ -65,81 +66,76 @@ private fun CreateReviewContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            androidx.compose.material3.Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
-                colors = androidx.compose.material3.CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)
-                )
+            AnimatedVisibility(
+                visibleState = visibleState,
+                enter = fadeIn(animationSpec = tween(1000)) +
+                        slideInVertically(
+                            initialOffsetY = { it / 8 },
+                            animationSpec = androidx.compose.animation.core.spring(
+                                dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
+                                stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+                            )
+                        )
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    Text(
-                        text = "Nueva Reseña",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.fillMaxWidth()
+                androidx.compose.material3.Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
+                    colors = androidx.compose.material3.CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)
                     )
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        FormFieldLabel(text = "Producto")
-                        TextInput(
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = "Nombre del producto a reseñar",
-                            item = uiState.productName,
-                            onItemChange = onProductNameChange
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = if (uiState.isLiked) "¿Te gustó el producto?" else "¿No te gustó?",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        androidx.compose.material3.Switch(
-                            checked = uiState.isLiked,
-                            onCheckedChange = onLikeChange
-                        )
-                    }
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        FormFieldLabel(text = "Tu opinión")
-                        TextInput(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp),
-                            placeholder = "Escribe aquí lo que piensas del producto...",
-                            item = uiState.comment,
-                            onItemChange = onCommentChange
-                        )
-                    }
-
-                    if (uiState.errorMessage != null) {
-                        Text(
-                            text = uiState.errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-
-                    MainButton(
+                ) {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(52.dp),
-                        text = "Publicar Reseña",
-                        onClick = onSubmit
-                    )
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        Text(
+                            text = "Nueva Reseña",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            FormFieldLabel(text = "Producto")
+                            TextInput(
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = "Nombre del producto a reseñar",
+                                item = uiState.productName,
+                                onItemChange = onProductNameChange
+                            )
+                        }
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            FormFieldLabel(text = "Tu opinión")
+                            TextInput(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(150.dp),
+                                placeholder = "Escribe aquí lo que piensas del producto...",
+                                item = uiState.comment,
+                                onItemChange = onCommentChange
+                            )
+                        }
+
+                        if (uiState.errorMessage != null) {
+                            Text(
+                                text = uiState.errorMessage,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+
+                        MainButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            text = "Publicar Reseña",
+                            onClick = onSubmit
+                        )
+                    }
                 }
             }
 

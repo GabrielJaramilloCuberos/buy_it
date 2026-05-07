@@ -1,8 +1,12 @@
 package com.example.buy_it.ui.screens.trends
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -76,11 +80,20 @@ fun Trends(
                     contentPadding = PaddingValues(top = 16.dp, bottom = 90.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    items(state.filteredProducts) { product ->
-                        ProductCard(
-                            productInfo = product,
-                            onClick = { onOpenDetail(product.id) }
-                        )
+                    itemsIndexed(state.filteredProducts) { index, product ->
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn(animationSpec = tween(600, delayMillis = index * 100)) +
+                                    slideInVertically(
+                                        initialOffsetY = { 50 },
+                                        animationSpec = tween(600, delayMillis = index * 100)
+                                    )
+                        ) {
+                            ProductCard(
+                                productInfo = product,
+                                onClick = { onOpenDetail(product.id) }
+                            )
+                        }
                     }
                 }
             }
@@ -117,9 +130,11 @@ private fun SearchBar(
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
             unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            focusedBorderColor = MaterialTheme.colorScheme.outline,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-            cursorColor = MaterialTheme.colorScheme.primary
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface
         )
     )
 }

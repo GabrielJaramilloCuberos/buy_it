@@ -1,5 +1,9 @@
 package com.example.buy_it.ui.screens.followlist
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -65,25 +69,34 @@ fun FollowList(
         LazyColumn(
             modifier = Modifier.padding(top = 18.dp)
         ) {
-            items(state.users) { user ->
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .clickable { onUserClick(user.id) },
-                    verticalAlignment = Alignment.CenterVertically
+            itemsIndexed(state.users) { index, user ->
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn(animationSpec = tween(600, delayMillis = index * 100)) +
+                            slideInVertically(
+                                initialOffsetY = { 50 },
+                                animationSpec = tween(600, delayMillis = index * 100)
+                            )
                 ) {
-                    ProfileAsyncImage(
-                        profileLink = user.pfpURL,
-                        size = 45
-                    )
+                    Row(
+                        modifier = Modifier
+                            .padding(vertical = 10.dp)
+                            .clickable { onUserClick(user.id) },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ProfileAsyncImage(
+                            profileLink = user.pfpURL,
+                            size = 45
+                        )
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
 
-                    Text(
-                        text = user.name.ifBlank { "Usuario" },
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                        Text(
+                            text = user.name.ifBlank { "Usuario" },
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }

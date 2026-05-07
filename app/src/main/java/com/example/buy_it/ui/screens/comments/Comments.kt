@@ -1,6 +1,10 @@
 package com.example.buy_it.ui.screens.comments
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -87,8 +91,17 @@ fun Comments(
                     .padding(horizontal = 14.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                items(state.comments) { c ->
-                    CommentCard(info = c)
+                itemsIndexed(state.comments) { index, c ->
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(animationSpec = tween(600, delayMillis = index * 100)) +
+                                slideInVertically(
+                                    initialOffsetY = { 50 },
+                                    animationSpec = tween(600, delayMillis = index * 100)
+                                )
+                    ) {
+                        CommentCard(info = c)
+                    }
                 }
 
                 item {
