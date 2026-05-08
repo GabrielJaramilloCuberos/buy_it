@@ -9,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.buy_it.ui.components.LoadingAnimation
 import com.example.buy_it.ui.components.MainBackground
 
 @Composable
@@ -83,7 +83,7 @@ fun ReviewEditor(
                                 .padding(top = 40.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
+                            LoadingAnimation(size = 120)
                         }
                     }
 
@@ -156,7 +156,7 @@ fun ReviewEditor(
                                     .padding(top = 12.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator()
+                                LoadingAnimation(size = 80)
                             }
                         }
                     }

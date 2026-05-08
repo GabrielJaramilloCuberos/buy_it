@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.example.buy_it.ui.screens.detail
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +44,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.buy_it.R
 import com.example.buy_it.data.ReviewInfo
+import com.example.buy_it.navigation.LocalNavAnimatedVisibilityScope
+import com.example.buy_it.navigation.LocalSharedTransitionScope
 import com.example.buy_it.ui.components.ProfileAsyncImage
 
 @Composable
@@ -78,15 +83,20 @@ fun ProductHeaderCard(
     name: String,
     imageRes: String,
     description: String,
+    productId: String = "", // Added productId for Shared Element key
     modifier: Modifier = Modifier,
     onClickArrow: () -> Unit = {},
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Imagen principal expansiva con Shared Element
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,7 +106,18 @@ fun ProductHeaderCard(
             shadowElevation = 8.dp,
             color = MaterialTheme.colorScheme.surface
         ) {
-            Box {
+            Box(
+                modifier = Modifier.then(
+                    if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                        with(sharedTransitionScope) {
+                            Modifier.sharedElement(
+                                rememberSharedContentState(key = "image-$productId"),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                        }
+                    } else Modifier
+                )
+            ) {
                 AsyncImage(
                     contentDescription = "Product image",
                     model = ImageRequest.Builder(LocalContext.current)

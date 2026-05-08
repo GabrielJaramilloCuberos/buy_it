@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.buy_it.ui.components.LoadingAnimation
 
 @Composable
 fun Detail(
@@ -45,7 +46,7 @@ fun Detail(
 
     if (state.isLoading) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            androidx.compose.material3.CircularProgressIndicator()
+            LoadingAnimation()
         }
         return
     }
@@ -72,6 +73,7 @@ fun Detail(
                         name = product.name,
                         imageRes = product.image,
                         description = product.description,
+                        productId = productId,
                         onClickArrow = onSeeStores
                     )
                 }

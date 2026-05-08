@@ -8,20 +8,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,15 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.Color
 import com.example.buy_it.R
 import com.example.buy_it.ui.components.CheckAndText
 import com.example.buy_it.ui.components.FondoBlanco
@@ -79,7 +70,6 @@ fun LoginContent(
 ) {
     val icono = if (!state.isPasswordVisible) R.drawable.hide else R.drawable.see
 
-    // Estado para disparar las animaciones
     val visibleState = remember {
         MutableTransitionState(false).apply { targetState = true }
     }
@@ -90,138 +80,154 @@ fun LoginContent(
     ) {
         FondoBlanco()
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.92f)
-                .padding(vertical = 24.dp)
-                .clip(RoundedCornerShape(32.dp))
-                .background(
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.15f)
-                )
-                .padding(horizontal = 24.dp, vertical = 32.dp)
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(1000)) +
+                    slideInVertically(
+                        initialOffsetY = { 100 },
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    )
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 60.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Título con animación
-                AnimatedVisibility(
-                    visibleState = visibleState,
-                    enter = fadeIn(animationSpec = tween(800)) + slideInVertically(initialOffsetY = { 40 })
-                ) {
-                    GradientMessage(
-                        text = "buy it.",
-                        fontSize = 56.sp
-                    )
-                }
+                // Logo con mayor impacto
+                GradientMessage(
+                    text = "buy it.",
+                    fontSize = 64.sp
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Descripción con ligero retraso
-                AnimatedVisibility(
-                    visibleState = visibleState,
-                    enter = fadeIn(animationSpec = tween(800, delayMillis = 200)) +
-                            slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(800, delayMillis = 200))
-                ) {
-                    Text(
-                        text = "Descubre, compara y comparte opiniones",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    text = "Descubre, compara y comparte opiniones",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(56.dp))
 
-                // Inputs con retraso
-                AnimatedVisibility(
-                    visibleState = visibleState,
-                    enter = fadeIn(animationSpec = tween(800, delayMillis = 400)) +
-                            slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(800, delayMillis = 400))
+                // Panel elevado estilo premium (igual que registro)
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(32.dp),
+                    shadowElevation = 12.dp,
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.03f),
+                                        Color.Transparent
+                                    )
+                                )
+                            )
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        TextInput(
+                        Column {
+                            FormFieldLabel(text = "Correo electrónico")
+                            TextInput(
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = "ejemplo@correo.com",
+                                item = state.email,
+                                onItemChange = onEmailChanged
+                            )
+                        }
+
+                        Column {
+                            FormFieldLabel(text = "Contraseña")
+                            PasswordInput(
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = "Tu contraseña",
+                                item = state.password,
+                                onItemChange = onPasswordChanged,
+                                mostrar = state.isPasswordVisible,
+                                onMostrarPassword = togglePasswordVisibility,
+                                icono = icono
+                            )
+                        }
+
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = "Email",
-                            item = state.email,
-                            onItemChange = onEmailChanged
-                        )
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CheckAndText(
+                                estado = state.isRememberMeChecked,
+                                onEstadoChange = { onRememberMeChanged() }
+                            )
+                        }
 
-                        PasswordInput(
+                        if (state.mostrarMensaje && state.errorMessage.isNotEmpty()) {
+                            Surface(
+                                color = MaterialTheme.colorScheme.errorContainer,
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = state.errorMessage,
+                                    modifier = Modifier.padding(12.dp),
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = "Contraseña",
-                            item = state.password,
-                            onItemChange = onPasswordChanged,
-                            mostrar = state.isPasswordVisible,
-                            onMostrarPassword = togglePasswordVisibility,
-                            icono = icono
-                        )
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            MainButton(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp),
+                                text = stringResource(R.string.iniciar_sesion),
+                                onClick = onLoginButtonPressed
+                            )
+
+                            SecondaryButton(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp),
+                                text = stringResource(R.string.crear_cuenta),
+                                onClick = onRegisterButtonPressed
+                            )
+                        }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Checkbox
-                AnimatedVisibility(
-                    visibleState = visibleState,
-                    enter = fadeIn(animationSpec = tween(800, delayMillis = 500))
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        CheckAndText(
-                            estado = state.isRememberMeChecked,
-                            onEstadoChange = { onRememberMeChanged() }
-                        )
-                    }
-                }
-
-                if (state.mostrarMensaje && state.errorMessage.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = state.errorMessage,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // Botones con retraso final
-                AnimatedVisibility(
-                    visibleState = visibleState,
-                    enter = fadeIn(animationSpec = tween(800, delayMillis = 600)) +
-                            slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(800, delayMillis = 600))
-                ) {
-                    Column {
-                        MainButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            text = stringResource(R.string.iniciar_sesion),
-                            onClick = onLoginButtonPressed
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        SecondaryButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            text = stringResource(R.string.crear_cuenta),
-                            onClick = onRegisterButtonPressed
-                        )
-                    }
-                }
+                
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
     }
+}
+
+@Composable
+private fun FormFieldLabel(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary
+    )
 }
 
 @Composable

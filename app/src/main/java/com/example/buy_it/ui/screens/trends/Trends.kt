@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.buy_it.ui.components.LoadingAnimation
 import com.example.buy_it.ui.components.MainBackground
 import com.example.buy_it.ui.screens.home.ProductCard
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,7 +60,7 @@ fun Trends(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    LoadingAnimation()
                 }
             } else if (state.filteredProducts.isEmpty()) {
                 Box(

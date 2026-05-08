@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.buy_it.data.ProductInfo
+import com.example.buy_it.ui.components.LoadingAnimation
 import com.example.buy_it.ui.components.MainBackground
 
 @Composable
@@ -51,7 +52,7 @@ fun Home(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    LoadingAnimation()
                 }
             } else if (state.filteredReviews.isEmpty()) {
                 Box(

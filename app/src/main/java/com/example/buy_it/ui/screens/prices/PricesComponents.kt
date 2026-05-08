@@ -24,13 +24,19 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.buy_it.R
 import com.example.buy_it.data.PricedItems
+import com.example.buy_it.navigation.LocalNavAnimatedVisibilityScope
+import com.example.buy_it.navigation.LocalSharedTransitionScope
 import java.util.Locale
 
 @Composable
 fun PriceCard(
     info: PricedItems,
+    productId: String = "",
     onClick: () -> Unit,
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+
     val shape = RoundedCornerShape(24.dp)
 
     Card(
@@ -65,7 +71,18 @@ fun PriceCard(
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = Color.White,
-                    modifier = Modifier.size(72.dp),
+                    modifier = Modifier
+                        .size(72.dp)
+                        .then(
+                            if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                                with(sharedTransitionScope) {
+                                    Modifier.sharedElement(
+                                        rememberSharedContentState(key = "image-$productId"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    )
+                                }
+                            } else Modifier
+                        ),
                     shadowElevation = 2.dp
                 ) {
                     AsyncImage(

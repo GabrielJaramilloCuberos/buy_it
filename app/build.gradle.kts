@@ -85,6 +85,9 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(libs.haze)
+    implementation(libs.lottie.compose)
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
