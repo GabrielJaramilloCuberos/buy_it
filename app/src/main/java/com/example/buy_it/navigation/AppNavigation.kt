@@ -1,5 +1,7 @@
 package com.example.buy_it.navigation
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -84,7 +86,31 @@ fun AppNavigation(
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,
-        modifier = modifier
+        modifier = modifier,
+        enterTransition = {
+            slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(500)
+            ) + fadeIn(animationSpec = tween(500))
+        },
+        exitTransition = {
+            shrinkOut(
+                shrinkTowards = androidx.compose.ui.Alignment.Center,
+                animationSpec = tween(500)
+            ) + fadeOut(animationSpec = tween(500))
+        },
+        popEnterTransition = {
+            scaleIn(
+                initialScale = 0.8f,
+                animationSpec = tween(500)
+            ) + fadeIn(animationSpec = tween(500))
+        },
+        popExitTransition = {
+            slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(500)
+            ) + fadeOut(animationSpec = tween(500))
+        }
     ){
 
         composable(route = Screen.Splash.route){

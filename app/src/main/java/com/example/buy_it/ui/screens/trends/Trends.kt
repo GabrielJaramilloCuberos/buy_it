@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun Trends(
     onOpenDetail: (String) -> Unit,
     trendsViewModel: TrendsViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val state by trendsViewModel.uiState.collectAsState()
 
@@ -83,10 +83,10 @@ fun Trends(
                     itemsIndexed(state.filteredProducts) { index, product ->
                         AnimatedVisibility(
                             visible = true,
-                            enter = fadeIn(animationSpec = tween(600, delayMillis = index * 100)) +
+                            enter = fadeIn(animationSpec = tween(durationMillis = 600, delayMillis = index * 100)) +
                                     slideInVertically(
                                         initialOffsetY = { 50 },
-                                        animationSpec = tween(600, delayMillis = index * 100)
+                                        animationSpec = tween(durationMillis = 600, delayMillis = index * 100)
                                     )
                         ) {
                             ProductCard(
@@ -104,7 +104,7 @@ fun Trends(
 @Composable
 private fun SearchBar(
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = value,
