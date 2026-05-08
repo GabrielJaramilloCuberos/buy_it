@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -80,8 +79,8 @@ sealed class Screen(val route: String) {
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    modifier: Modifier = Modifier
-){
+    modifier: Modifier = Modifier,
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,
@@ -238,9 +237,6 @@ fun AppNavigation(
             Detail(
                 productId = productId,
                 onBackPressed = { navController.popBackStack() },
-                onOpenComments = {
-                    navController.navigate(Screen.Comments.createRoute(productId))
-                },
                 onSeeStores = {
                     navController.navigate(Screen.Prices.createRoute(productId))
                 },
@@ -290,7 +286,7 @@ fun AppNavigation(
                 onBackPressed = {
                     navController.previousBackStackEntry
                         ?.savedStateHandle
-                        ?.set("refresh_detail", true)
+                        ?.set("refresh_detail", value = true)
                     navController.popBackStack()
                 }
             )
@@ -333,7 +329,7 @@ fun AppNavigation(
             )
         }
 
-        composable(route = Screen.Prices.route) { backStackEntry ->
+        composable(route = Screen.Prices.route) {
             val pricesViewModel: PricesViewModel = hiltViewModel()
             Prices(pricesViewModel = pricesViewModel)
         }

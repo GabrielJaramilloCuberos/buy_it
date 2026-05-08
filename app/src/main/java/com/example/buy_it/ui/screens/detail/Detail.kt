@@ -23,13 +23,12 @@ import androidx.compose.ui.unit.dp
 fun Detail(
     productId: String,
     onBackPressed: () -> Unit,
-    onOpenComments: () -> Unit,
     onSeeStores: () -> Unit,
     onOpenReviewEditor: (String) -> Unit,
     onEditReview: (String, String) -> Unit,
     onNavigateToProfile: (String) -> Unit,
     detailViewModel: DetailViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val state by detailViewModel.uiState.collectAsState()
 
@@ -72,9 +71,7 @@ fun Detail(
                     ProductHeaderCard(
                         name = product.name,
                         imageRes = product.image,
-                        range = product.range,
                         description = product.description,
-                        ratingsCount = product.ratingsCount,
                         onClickArrow = onSeeStores
                     )
                 }
@@ -86,15 +83,14 @@ fun Detail(
                 itemsIndexed(state.reviews) { index, review ->
                     AnimatedVisibility(
                         visible = true,
-                        enter = fadeIn(animationSpec = tween(600, delayMillis = 400 + index * 100)) +
+                        enter = fadeIn(animationSpec = tween(600, delayMillis = 400 + (index * 100))) +
                                 slideInVertically(
                                     initialOffsetY = { 50 },
-                                    animationSpec = tween(600, delayMillis = 400 + index * 100)
+                                    animationSpec = tween(600, delayMillis = 400 + (index * 100))
                                 )
                     ) {
                         ReviewMiniCard(
                             info = review,
-                            onCommentClick = onOpenComments,
                             onClick = {
                                 if (detailViewModel.isReviewOwner(review.userId)) {
                                     onEditReview(productId, review.id)

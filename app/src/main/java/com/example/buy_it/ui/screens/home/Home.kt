@@ -89,8 +89,7 @@ fun Home(
                                     range = review.range,
                                     ratingsCount = review.likesCount
                                 ),
-                                onClick = { onOpenDetail(review.productId) },
-                                isLikeCount = true
+                                onClick = { onOpenDetail(review.productId) }
                             )
                         }
                     }

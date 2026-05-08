@@ -29,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -47,7 +46,7 @@ import com.example.buy_it.ui.components.ProfileAsyncImage
 @Composable
 fun DetailTopBar(
     onBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -78,9 +77,7 @@ fun DetailTopBar(
 fun ProductHeaderCard(
     name: String,
     imageRes: String,
-    range: String,
     description: String,
-    ratingsCount: Int,
     modifier: Modifier = Modifier,
     onClickArrow: () -> Unit = {},
 ) {
@@ -90,7 +87,6 @@ fun ProductHeaderCard(
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Imagen principal expansiva y moderna
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,7 +101,7 @@ fun ProductHeaderCard(
                     contentDescription = "Product image",
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(imageRes)
-                        .crossfade(true)
+                        .crossfade(enable = true)
                         .build(),
                     error = painterResource(id = R.drawable.user_image_icon),
                     placeholder = painterResource(id = R.drawable.loading_img),
@@ -113,7 +109,6 @@ fun ProductHeaderCard(
                     modifier = Modifier.fillMaxSize()
                 )
                 
-                // Degradado para que el texto sobre la imagen sea legible si se añade después
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -124,31 +119,11 @@ fun ProductHeaderCard(
                             )
                         )
                 )
-
-                /*
-                // Badge de rango flotante sobre la imagen
-                Surface(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.TopEnd),
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = range,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Black,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                    )
-                }
-                */
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Contenido informativo
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -172,7 +147,6 @@ fun ProductHeaderCard(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón de acción para ver tiendas rediseñado
             Surface(
                 onClick = onClickArrow,
                 modifier = Modifier.fillMaxWidth(),
@@ -192,7 +166,7 @@ fun ProductHeaderCard(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Default.Edit, // Icono representativo de reporte/tienda
+                            imageVector = Icons.Default.Edit,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
@@ -219,7 +193,7 @@ fun ProductHeaderCard(
 @Composable
 fun SectionTitle(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = text,
@@ -233,11 +207,10 @@ fun SectionTitle(
 @Composable
 fun ReviewMiniCard(
     info: ReviewInfo,
-    onCommentClick: () -> Unit,
     onClick: () -> Unit,
     onUserClick: (String) -> Unit,
     onLikeClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
@@ -276,7 +249,6 @@ fun ReviewMiniCard(
                     }
                 }
 
-                // Indicador de "Me gusta"
                 Surface(
                     color = if (info.likedByCurrentUser) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
                     shape = CircleShape,
@@ -323,7 +295,7 @@ fun ReviewMiniCard(
 @Composable
 fun AddReviewButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = onClick,

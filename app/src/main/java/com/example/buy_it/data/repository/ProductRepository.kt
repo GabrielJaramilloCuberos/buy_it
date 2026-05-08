@@ -2,6 +2,7 @@ package com.example.buy_it.data.repository
 
 import android.util.Log
 import coil.network.HttpException
+import com.example.buy_it.data.PricedItems
 import com.example.buy_it.data.ProductInfo
 import com.example.buy_it.data.ReviewInfo
 import com.example.buy_it.data.datasource.impl.firestore.ProductFirestoreDataSourceImpl
@@ -78,6 +79,7 @@ class ProductRepository @Inject constructor(
         } catch (e: HttpException) {
             Result.failure(e)
         } catch (e: Exception) {
+            Log.d("prods", "Error getting product reviews: ${e.message}")
             Result.failure(e)
         }
     }
@@ -90,6 +92,7 @@ class ProductRepository @Inject constructor(
         } catch (e: HttpException) {
             Result.failure(e)
         } catch (e: Exception) {
+            Log.d("prods", "Error getting product reviews: ${e.message}")
             Result.failure(e)
         }
     }
@@ -122,6 +125,25 @@ class ProductRepository @Inject constructor(
 
             Result.success(completedReviews)
         } catch (e: Exception) {
+            Log.d("prods", "Error getting product reviews: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getProductPrices(id: String): Result<List<PricedItems>> {
+        return try {
+            val priceDTOs = productRemoteDataSource.getProductPrices(id)
+            val pricedItems = priceDTOs.map { dto ->
+                PricedItems(
+                    name = dto.storeName,
+                    price = dto.price,
+                    image = dto.storeLogo,
+                    percentage = dto.percentage
+                )
+            }
+            Result.success(pricedItems)
+        } catch (e: Exception) {
+            Log.d("prods", "Error getting product reviews: ${e.message}")
             Result.failure(e)
         }
     }

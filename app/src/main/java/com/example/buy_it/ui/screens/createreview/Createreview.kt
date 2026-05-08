@@ -39,7 +39,7 @@ fun Createreview(
         onSubmit = {
             onReviewSubmitted()
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -52,7 +52,7 @@ private fun CreateReviewContent(
     modifier: Modifier = Modifier
 ) {
     val visibleState = remember {
-        androidx.compose.animation.core.MutableTransitionState(false).apply { targetState = true }
+        androidx.compose.animation.core.MutableTransitionState(initialState = false).apply { targetState = true }
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -120,9 +120,9 @@ private fun CreateReviewContent(
                             )
                         }
 
-                        if (uiState.errorMessage != null) {
+                        uiState.errorMessage?.let { message ->
                             Text(
-                                text = uiState.errorMessage,
+                                text = message,
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodySmall
                             )

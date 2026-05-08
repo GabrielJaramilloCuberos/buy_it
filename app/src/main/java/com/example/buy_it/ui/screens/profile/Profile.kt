@@ -262,8 +262,7 @@ fun Profile(
                             } else {
                                 onOpenDetail(review.productId)
                             }
-                        },
-                        isLikeCount = true
+                        }
                     )
                 }
             }

@@ -11,18 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Comment
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
@@ -48,9 +43,8 @@ import com.example.buy_it.ui.components.ProfileAsyncImage
 @Composable
 fun ProductCard(
     productInfo: ProductInfo,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    isLikeCount: Boolean = false,
-    modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -84,7 +78,6 @@ fun ProductCard(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagen del producto con un diseño más dinámico
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -117,22 +110,6 @@ fun ProductCard(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
-                    
-                    /*
-                    // Badge de rango o estatus
-                    Surface(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = productInfo.range,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-                    */
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -148,7 +125,6 @@ fun ProductCard(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Fila de interacción social rediseñada
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -168,7 +144,7 @@ fun ProductCard(
 private fun SocialIndicator(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     text: String,
-    color: Color
+    color: Color,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

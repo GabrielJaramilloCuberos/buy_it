@@ -1,7 +1,9 @@
 package com.example.buy_it.data.datasource.impl.firestore
 
+import android.util.Log
 import com.example.buy_it.data.datasource.ProductRemoteDataSource
 import com.example.buy_it.data.dtos.CreateProductDto
+import com.example.buy_it.data.dtos.PriceDTO
 import com.example.buy_it.data.dtos.ProductDTO
 import com.example.buy_it.data.dtos.ReviewDTO
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,6 +45,39 @@ class ProductFirestoreDataSourceImpl @Inject constructor(
             snapshot.toObjects(ReviewDTO::class.java)
         } catch (e: Exception) {
             throw Exception("Error al obtener reseñas: ${e.message}")
+        }
+    }
+
+    override suspend fun getProductPrices(id: String): List<PriceDTO> {
+        return try {
+            Log.d("prices_debug", "Buscando precios para productId: $id")
+            val snapshot = db.collection("prices")
+                .whereEqualTo("productId", id)
+                .get()
+                .await()
+
+            Log.d("prices_debug", "Documentos encontrados: ${snapshot.size()}")
+
+            snapshot.documents.map { doc ->
+                val data = doc.data
+                Log.d("prices_debug", "Data del documento: $data")
+                
+                // Mapeo manual para asegurar que los campos se lean correctamente
+                val dto = PriceDTO(
+                    id = doc.id,
+                    storeName = data?.get("storeName") as? String ?: "",
+                    price = (data?.get("price") as? Number)?.toDouble() ?: 0.0,
+                    productId = data?.get("productId") as? String ?: "",
+                    storeLogo = data?.get("storeLogo") as? String ?: "",
+                    percentage = (data?.get("percentage") as? Number)?.toInt() ?: 0
+                )
+                
+                Log.d("prices_debug", "DTO final: $dto")
+                dto
+            }
+        } catch (e: Exception) {
+            Log.e("prices_debug", "Error al obtener precios: ${e.message}")
+            throw Exception("Error al obtener precios: ${e.message}")
         }
     }
 
